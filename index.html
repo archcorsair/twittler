@@ -8,17 +8,45 @@
     <script>
 
       $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
+        let $body = $('body'); // assigning the body to a variable
+        let $button = $('<button></button>');
+        $button.text('Auto Update: Off');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+        $body.html(''); // emptying the body
+
+
+
+        function loadTweets(){
+          let index = streams.home.length - 1;
+          let lastLength = index;
+          while(index - lastLength >= 0){
+            let $tweet = $('<div></div>');
+            let tweet = streams.home[index];
+            $tweet.text(`@${tweet.user}: ${tweet.message}`);
+            $tweet.appendTo($body);
+            index--;
+          }
         }
+        // function update() {
+        //   let index = streams.home.length
+        // }
+        loadTweets(); // Initial call to generate tweets.
+        let intervalID;
+        $button.prependTo($body); // make sure button stays at the top of the page
+        $button.click(function() { // button click handler // trigger auto refresh
+          if ($(this).text() === 'Auto Update: Off') {
+            $(this).text('Auto Update: On');
+            if (!intervalID) {
+              intervalID = window.setInterval(loadTweets, 1000);
+            }
+            console.log(`Auto Update Started with Interval ID: ${intervalID}`)
+          } else {
+            $(this).text('Auto Update: On');
+            window.clearInterval(intervalID);
+            console.log(`Auto Update Stopped with Interval ID: ${intervalID}`)
+          }
+        })
+
 
       });
 
