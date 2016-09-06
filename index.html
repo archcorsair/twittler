@@ -15,16 +15,16 @@
         $body.html(''); // emptying the body
 
 
-
+        let lastLength = 0;
         function loadTweets(){
-          let index = streams.home.length - 1;
-          let lastLength = index;
-          while(index - lastLength >= 0){
+          let fullLength = streams.home.length - 1;
+          let currentLength = fullLength - lastLength
+          while(currentLength >= 0){
             let $tweet = $('<div></div>');
-            let tweet = streams.home[index];
+            let tweet = streams.home[currentLength];
             $tweet.text(`@${tweet.user}: ${tweet.message}`);
             $tweet.appendTo($body);
-            index--;
+            currentLength--;
           }
         }
         // function update() {
@@ -37,11 +37,11 @@
           if ($(this).text() === 'Auto Update: Off') {
             $(this).text('Auto Update: On');
             if (!intervalID) {
-              intervalID = window.setInterval(loadTweets, 1000);
+              intervalID = window.setInterval(loadTweets, 2000);
             }
             console.log(`Auto Update Started with Interval ID: ${intervalID}`)
           } else {
-            $(this).text('Auto Update: On');
+            $(this).text('Auto Update: Off');
             window.clearInterval(intervalID);
             console.log(`Auto Update Stopped with Interval ID: ${intervalID}`)
           }
