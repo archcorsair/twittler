@@ -12,24 +12,32 @@
     <script>
 
       $(document).ready(function(){
+        // $("time.timeago").timeago();
         let $body = $('body');
-        let $tweetbox = $('<div></div>').addClass('tweetbox'); // container for all tweets
-        let $rightgrid = $('<div></div>').addClass('col-md-3'); // create bootstrap grid right padding
-        let $leftgrid = $('<div></div>').addClass('col-md-3'); // create bootstrap grid left padding
-        let $middlegrid = $('<div></div>').addClass('col-md-6'); // create bootstrap center grid for content
-        let $button = $('<button></button>').addClass('btn').addClass('btn-success').text('Auto Update: Off').addClass('toggle-btn');
+        // Container for all tweets
+        let $tweetbox = $('<div></div>').addClass('tweetbox');
+
+        // Bootstrap grid
+        let $rightgrid = $('<div></div>').addClass('col-md-3');
+        let $leftgrid = $('<div></div>').addClass('col-md-3');
+        let $middlegrid = $('<div></div>').addClass('col-md-6'); // bootstrap middle grid for content
+
         // Navbar and button
+        let $button = $('<button></button>').addClass('btn').addClass('btn-warning').text('Auto Update: Off');
         let $navbar = $('<nav></nav>').addClass('navbar-default').addClass('container-fluid').addClass('navbar-fixed-top');
-        let $brand = $('<a></a>').addClass('navbar-brand').text('Twittler by Daniel Shneyder');
+        let $brand = $('<a></a>').addClass('navbar-brand').text('Twittler');
         let $navbarnav = $('<ul></ul>').addClass('nav').addClass('navbar-nav').addClass('navbar-right');
         let $navbarform = $('<form></form>').addClass('navbar-form').addClass('navbar-right');
 
-        $brand.appendTo($navbar);
+        // Listgroup for tweets
+        let $listgroup = $('<ul></ul>').addClass('list-group');
 
-        $body.html(''); // emptying the body
+        // Append all the things!
+        $body.html(''); // Clearing out the body
+        $brand.appendTo($navbar);
         $leftgrid.appendTo($body);
         $middlegrid.appendTo($body);
-        $tweetbox.appendTo($middlegrid);
+        $tweetbox.appendTo($middlegrid); // Push content to middle grid
         $rightgrid.appendTo($body);
         $navbar.prependTo($body);
         $navbarnav.appendTo($navbar);
@@ -40,40 +48,41 @@
         function loadTweets(){
           let allTweets = streams.home.length - 1;
             while(currentTweet < allTweets){
-              let $tweet = $('<div></div>').addClass('tweet-body');
+              let $tweet = $('<li></li>').addClass('list-group-item');
               let $tweetDate = $('<span></span>').addClass('tweet-date');
+              // let $time = $('<time></time>').addClass('timeago');
               let tweet = streams.home[currentTweet];
               $tweetDate.text(`${jQuery.timeago(tweet.created_at)} `);
+              // $time.attr('datetime', `${tweet.created_at.toISOString()}`);
               $tweet.text(`@${tweet.user}: ${tweet.message}`);
               $tweet.appendTo($tweetbox);
               $tweetDate.prependTo($tweet);
+              // $time.prependTo($tweet);
               currentTweet++;
             }
         }
-        // function update() {
-        //   let index = streams.home.length
-        // }
+
         loadTweets(); // Initial call to generate tweets.
         let intervalID;
-        //$button.prependTo($body); // make sure button stays at the top of the page
+
+        // button click handler // trigger auto refresh
         $button.click(function(event) {
-          event.preventDefault(); // button click handler // trigger auto refresh
+          event.preventDefault(); // prevent <button> default submit behavior from refreshing page
           if ($(this).text() === 'Auto Update: Off') {
             $(this).text('Auto Update: On');
-            $(this).removeClass('btn-success').addClass('btn-warning');
+            $(this).removeClass('btn-warning').addClass('btn-success');
             if (!intervalID) {
               intervalID = window.setInterval(loadTweets, 1000);
             }
             console.log(`Auto Update Started with Interval ID: ${intervalID}`)
           } else {
             $(this).text('Auto Update: Off');
-            $(this).removeClass('btn-warning').addClass('btn-success');
+            $(this).removeClass('btn-success').addClass('btn-warning');
             window.clearInterval(intervalID);
             console.log(`Auto Update Stopped with Interval ID: ${intervalID}`)
+            intervalID = '';
           }
         })
-
-
       });
 
     </script>
