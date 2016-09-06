@@ -5,6 +5,7 @@
     <script src="js/data_generator.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/stylesheet.css">
   </head>
   <body>
     <script>
@@ -12,10 +13,27 @@
       $(document).ready(function(){
         let $body = $('body'); // assigning the body to a variable
         let $tweetbox = $('<div></div>').addClass('tweetbox');
-        let $button = $('<button></button>').addClass('btn').addClass('btn-success');
-        $button.text('Auto Update: Off');
+        let $rightgrid = $('<div></div>').addClass('col-md-3');
+        let $leftgrid = $('<div></div>').addClass('col-md-3');
+        let $middlegrid = $('<div></div>').addClass('col-md-6');
+        let $button = $('<button></button>').addClass('btn').addClass('btn-success').text('Auto Update: Off').addClass('toggle-btn');
+        // Navbar and button
+        let $navbar = $('<nav></nav>').addClass('navbar-default').addClass('container-fluid').addClass('navbar-fixed-top');
+        let $brand = $('<a></a>').addClass('navbar-brand').text('Twittler');
+        let $navbarnav = $('<ul></ul>').addClass('nav').addClass('navbar-nav').addClass('navbar-right');
+        let $navbarform = $('<form></form>').addClass('navbar-form').addClass('navbar-right');
+
+        $brand.appendTo($navbar);
+
         $body.html(''); // emptying the body
-        $tweetbox.appendTo($body);
+        $leftgrid.appendTo($body);
+        $middlegrid.appendTo($body);
+        $tweetbox.appendTo($middlegrid);
+        $rightgrid.appendTo($body);
+        $navbar.prependTo($body);
+        $navbarnav.appendTo($navbar);
+        $navbarform.appendTo($navbarnav);
+        $button.appendTo($navbarform);
 
         let currentTweet = 0;
         function loadTweets(){
@@ -24,7 +42,7 @@
               let $tweet = $('<div></div>').addClass('tweet-body');
               let $tweetDate = $('<span></span>').addClass('tweet-date');
               let tweet = streams.home[currentTweet];
-              $tweetDate.text(`${tweet.created_at.toLocaleString()}`);
+              $tweetDate.text(`${tweet.created_at.toLocaleString()} `);
               $tweet.text(`@${tweet.user}: ${tweet.message}`);
               $tweet.appendTo($tweetbox);
               $tweetDate.prependTo($tweet);
@@ -36,8 +54,9 @@
         // }
         loadTweets(); // Initial call to generate tweets.
         let intervalID;
-        $button.prependTo($body); // make sure button stays at the top of the page
-        $button.click(function() { // button click handler // trigger auto refresh
+        //$button.prependTo($body); // make sure button stays at the top of the page
+        $button.click(function(event) {
+          event.preventDefault(); // button click handler // trigger auto refresh
           if ($(this).text() === 'Auto Update: Off') {
             $(this).text('Auto Update: On');
             $(this).removeClass('btn-success').addClass('btn-warning');
