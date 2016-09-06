@@ -17,7 +17,7 @@
         // Container for all tweets
         let $tweetbox = $('<div></div>').addClass('tweetbox');
 
-        // Bootstrap grid
+        // Bootstrap Layout
         let $rightgrid = $('<div></div>').addClass('col-md-3');
         let $leftgrid = $('<div></div>').addClass('col-md-3');
         let $middlegrid = $('<div></div>').addClass('col-md-6'); // bootstrap middle grid for content
@@ -26,14 +26,28 @@
         let $button = $('<button></button>').addClass('btn').addClass('btn-warning').text('Auto Update: Off');
         let $navbar = $('<nav></nav>').addClass('navbar-default').addClass('container-fluid').addClass('navbar-fixed-top');
         let $brand = $('<a></a>').addClass('navbar-brand').text('Twittler');
-        let $navbarnav = $('<ul></ul>').addClass('nav').addClass('navbar-nav').addClass('navbar-right');
+        let $navbarnav = $('<ul></ul>').addClass('nav').addClass('navbar-nav').addClass('navbar-right').addClass('navbar-margin');
         let $navbarform = $('<form></form>').addClass('navbar-form').addClass('navbar-right');
+        let $navimg = $('<img></img>').addClass('navbar-img').attr('alt', 'Brand').attr('src', 'img/hr.png');
 
         // Listgroup for tweets
         let $listgroup = $('<ul></ul>').addClass('list-group');
 
+        // Modal Construction
+        let $modal = $('<div></div>').addClass('modal').addClass('fade').attr('id', 'myModal').attr('tabindex', '-1').attr('role', 'dialog').attr('aria-labelledby', "myModalLabel");
+        let $modaldialog = $('<div></div>').addClass('modal-dialog').attr('role', 'document');
+        let $modalcontent = $('<div></div>').addClass('modal-content');
+        let $modalheader = $('<div></div>').addClass('modal-header');
+        let $modalx = $('<button></button>').addClass('close').attr('type', 'button').attr('data-dismiss', 'modal').attr('aria-label', "Close");
+        let $modalbtnspan = $('<span></span>').attr('aria-hidden', 'true');
+        let $modaltitle = $('<h4></h4>').addClass('modal-title').attr('id', 'myModalLabel').text('This is the title');
+        let $modalbody = $('<div></div>').addClass('modal-body');
+        let $modalfooter = $('<div></div>').addClass('modal-footer');
+        let $modalclose = $('<button></button>').addClass('btn').addClass('btn-default').attr('type', 'button').attr('data-dismiss', 'modal').text('Close');
+
         // Append all the things!
         $body.html(''); // Clearing out the body
+        $navimg.appendTo($navbar);
         $brand.appendTo($navbar);
         $leftgrid.appendTo($body);
         $middlegrid.appendTo($body);
@@ -43,19 +57,32 @@
         $navbarnav.appendTo($navbar);
         $navbarform.appendTo($navbarnav);
         $button.appendTo($navbarform);
+        // Modal
+        $modaldialog.appendTo($modal);
+        $modalcontent.appendTo($modaldialog);
+        $modalheader.appendTo($modalcontent);
+        $modalx.appendTo($modalheader);
+        $modalbtnspan.appendTo($modalx);
+        $modaltitle.appendTo($modaltitle);
+        $modalbody.appendTo($modalheader);
+        $modalfooter.appendTo($modalheader);
+        $modalclose.appendTo($modalfooter);
 
         let currentTweet = 0;
         function loadTweets(){
           let allTweets = streams.home.length - 1;
             while(currentTweet < allTweets){
-              let $tweet = $('<li></li>').addClass('list-group-item');
-              let $tweetDate = $('<span></span>').addClass('tweet-date');
-              // let $time = $('<time></time>').addClass('timeago');
               let tweet = streams.home[currentTweet];
+              let $tweet = $('<li></li>').addClass('list-group-item');
+              let $tweetDate = $('<small></small>').addClass('tweet-date');
+              let $tweetUser = $('<a></a>').addClass('tweet-user').attr('href', '#').text(`@${tweet.user}`);
+              // let $time = $('<time></time>').addClass('timeago');
               $tweetDate.text(`${jQuery.timeago(tweet.created_at)} `);
               // $time.attr('datetime', `${tweet.created_at.toISOString()}`);
-              $tweet.text(`@${tweet.user}: ${tweet.message}`);
-              $tweet.appendTo($tweetbox);
+              // $tweet.text(`@${tweet.user}: ${tweet.message}`);
+              $tweet.text(`: ${tweet.message}`);
+              $tweetUser.prependTo($tweet);
+              $tweet.prependTo($tweetbox);
               $tweetDate.prependTo($tweet);
               // $time.prependTo($tweet);
               currentTweet++;
