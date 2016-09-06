@@ -18,10 +18,9 @@
         function loadTweets(){
           let allTweets = streams.home.length - 1;
             while(currentTweet < allTweets){
-              console.log(currentTweet);
               let $tweet = $('<div></div>');
               let tweet = streams.home[currentTweet];
-              $tweet.text(`@${tweet.user}: ${tweet.message}`);
+              $tweet.text(`${tweet.created_at.toLocaleString()} @${tweet.user}: ${tweet.message}`);
               $tweet.appendTo($body);
               currentTweet++;
             }
