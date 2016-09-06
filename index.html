@@ -14,18 +14,17 @@
 
         $body.html(''); // emptying the body
 
-        let lastLength = 0;
+        let currentTweet = 0;
         function loadTweets(){
-          let fullLength = streams.home.length - 1;
-          let currLength = fullLength - lastLength
-          lastLength = currLength;
-          while(currLength - 1 >= lastLength - 1){
-            let $tweet = $('<div></div>');
-            let tweet = streams.home[currLength];
-            $tweet.text(`@${tweet.user}: ${tweet.message}`);
-            $tweet.appendTo($body);
-            currLength--;
-          }
+          let allTweets = streams.home.length - 1;
+            while(currentTweet < allTweets){
+              console.log(currentTweet);
+              let $tweet = $('<div></div>');
+              let tweet = streams.home[currentTweet];
+              $tweet.text(`@${tweet.user}: ${tweet.message}`);
+              $tweet.appendTo($body);
+              currentTweet++;
+            }
         }
         // function update() {
         //   let index = streams.home.length
