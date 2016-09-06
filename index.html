@@ -1,27 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="jquery.js"></script>
-    <script src="data_generator.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/data_generator.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
   </head>
   <body>
     <script>
 
       $(document).ready(function(){
         let $body = $('body'); // assigning the body to a variable
-        let $button = $('<button></button>');
+        let $tweetbox = $('<div></div>').addClass('tweetbox');
+        let $button = $('<button></button>').addClass('btn').addClass('btn-success');
         $button.text('Auto Update: Off');
-
         $body.html(''); // emptying the body
+        $tweetbox.appendTo($body);
 
         let currentTweet = 0;
         function loadTweets(){
           let allTweets = streams.home.length - 1;
             while(currentTweet < allTweets){
-              let $tweet = $('<div></div>');
+              let $tweet = $('<div></div>').addClass('tweet-body');
+              let $tweetDate = $('<span></span>').addClass('tweet-date');
               let tweet = streams.home[currentTweet];
-              $tweet.text(`${tweet.created_at.toLocaleString()} @${tweet.user}: ${tweet.message}`);
-              $tweet.appendTo($body);
+              $tweetDate.text(`${tweet.created_at.toLocaleString()}`);
+              $tweet.text(`@${tweet.user}: ${tweet.message}`);
+              $tweet.appendTo($tweetbox);
+              $tweetDate.prependTo($tweet);
               currentTweet++;
             }
         }
@@ -34,12 +40,14 @@
         $button.click(function() { // button click handler // trigger auto refresh
           if ($(this).text() === 'Auto Update: Off') {
             $(this).text('Auto Update: On');
+            $(this).removeClass('btn-success').addClass('btn-warning');
             if (!intervalID) {
               intervalID = window.setInterval(loadTweets, 1000);
             }
             console.log(`Auto Update Started with Interval ID: ${intervalID}`)
           } else {
             $(this).text('Auto Update: Off');
+            $(this).removeClass('btn-warning').addClass('btn-success');
             window.clearInterval(intervalID);
             console.log(`Auto Update Stopped with Interval ID: ${intervalID}`)
           }
