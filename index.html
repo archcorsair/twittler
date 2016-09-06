@@ -4,6 +4,7 @@
     <script src="js/jquery.js"></script>
     <script src="js/data_generator.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.timeago.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/stylesheet.css">
   </head>
@@ -11,15 +12,15 @@
     <script>
 
       $(document).ready(function(){
-        let $body = $('body'); // assigning the body to a variable
-        let $tweetbox = $('<div></div>').addClass('tweetbox');
-        let $rightgrid = $('<div></div>').addClass('col-md-3');
-        let $leftgrid = $('<div></div>').addClass('col-md-3');
-        let $middlegrid = $('<div></div>').addClass('col-md-6');
+        let $body = $('body');
+        let $tweetbox = $('<div></div>').addClass('tweetbox'); // container for all tweets
+        let $rightgrid = $('<div></div>').addClass('col-md-3'); // create bootstrap grid right padding
+        let $leftgrid = $('<div></div>').addClass('col-md-3'); // create bootstrap grid left padding
+        let $middlegrid = $('<div></div>').addClass('col-md-6'); // create bootstrap center grid for content
         let $button = $('<button></button>').addClass('btn').addClass('btn-success').text('Auto Update: Off').addClass('toggle-btn');
         // Navbar and button
         let $navbar = $('<nav></nav>').addClass('navbar-default').addClass('container-fluid').addClass('navbar-fixed-top');
-        let $brand = $('<a></a>').addClass('navbar-brand').text('Twittler');
+        let $brand = $('<a></a>').addClass('navbar-brand').text('Twittler by Daniel Shneyder');
         let $navbarnav = $('<ul></ul>').addClass('nav').addClass('navbar-nav').addClass('navbar-right');
         let $navbarform = $('<form></form>').addClass('navbar-form').addClass('navbar-right');
 
@@ -42,7 +43,7 @@
               let $tweet = $('<div></div>').addClass('tweet-body');
               let $tweetDate = $('<span></span>').addClass('tweet-date');
               let tweet = streams.home[currentTweet];
-              $tweetDate.text(`${tweet.created_at.toLocaleString()} `);
+              $tweetDate.text(`${jQuery.timeago(tweet.created_at)} `);
               $tweet.text(`@${tweet.user}: ${tweet.message}`);
               $tweet.appendTo($tweetbox);
               $tweetDate.prependTo($tweet);
