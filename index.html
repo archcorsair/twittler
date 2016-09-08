@@ -12,7 +12,6 @@
     <script>
 
       $(document).ready(function(){
-        // $("time.timeago").timeago();
         let $body = $('body');
         // Container for all tweets
         let $tweetbox = $('<div></div>').addClass('tweetbox');
@@ -75,10 +74,10 @@
               let tweet = streams.home[currentTweet];
               let $tweet = $('<li></li>').addClass('list-group-item');
               // let $tweetDate = $('<small></small>').addClass('tweet-date');
-              let $tweetUser = $('<a></a>').addClass('username').attr('data-toggle', 'modal').attr('data-target', '#myModal').attr('href', '#').text(`@${tweet.user}`);
+              let $tweetUser = $('<a></a>').addClass('username').attr('href', '#').text(` @${tweet.user}`);
               let $time = $('<time></time>').addClass('timeago');
               // $tweetDate.text(`${jQuery.timeago(tweet.created_at)} `);
-              $time.attr('datetime', `${tweet.created_at.toISOString()}`);
+              $time.attr('datetime', `${tweet.created_at.toISOString()}`).addClass('date-text');
               // $tweet.text(`@${tweet.user}: ${tweet.message}`);
               $tweet.text(`: ${tweet.message}`);
               $tweetUser.prependTo($tweet);
@@ -86,7 +85,7 @@
               // $tweetDate.prependTo($tweet);
               $time.prependTo($tweet);
               currentTweet++;
-              $("time.timeago").timeago();
+              $("time.timeago").timeago(); // Update time dynamically
             }
         }
 
@@ -113,7 +112,10 @@
           }
         })
         $tweetbox.on('click', '.username', function(){
-          $modal.modal('show');
+          console.log('triggered')
+          setTimeout(function() {
+            $modal.modal();
+          }, 0)
         })
       });
     </script>
