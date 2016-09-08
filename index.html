@@ -74,22 +74,24 @@
             while(currentTweet < allTweets){
               let tweet = streams.home[currentTweet];
               let $tweet = $('<li></li>').addClass('list-group-item');
-              let $tweetDate = $('<small></small>').addClass('tweet-date');
-              let $tweetUser = $('<a></a>').addClass('tweet-user').attr('href', '#').text(`@${tweet.user}`);
-              // let $time = $('<time></time>').addClass('timeago');
-              $tweetDate.text(`${jQuery.timeago(tweet.created_at)} `);
-              // $time.attr('datetime', `${tweet.created_at.toISOString()}`);
+              // let $tweetDate = $('<small></small>').addClass('tweet-date');
+              let $tweetUser = $('<a></a>').addClass('username').attr('data-toggle', 'modal').attr('data-target', '#myModal').attr('href', '#').text(`@${tweet.user}`);
+              let $time = $('<time></time>').addClass('timeago');
+              // $tweetDate.text(`${jQuery.timeago(tweet.created_at)} `);
+              $time.attr('datetime', `${tweet.created_at.toISOString()}`);
               // $tweet.text(`@${tweet.user}: ${tweet.message}`);
               $tweet.text(`: ${tweet.message}`);
               $tweetUser.prependTo($tweet);
               $tweet.prependTo($tweetbox);
-              $tweetDate.prependTo($tweet);
-              // $time.prependTo($tweet);
+              // $tweetDate.prependTo($tweet);
+              $time.prependTo($tweet);
               currentTweet++;
+              $("time.timeago").timeago();
             }
         }
 
         loadTweets(); // Initial call to generate tweets.
+        // $("time.timeago").timeago();
         let intervalID;
 
         // button click handler // trigger auto refresh
@@ -110,8 +112,10 @@
             intervalID = '';
           }
         })
+        $tweetbox.on('click', '.username', function(){
+          $modal.modal('show');
+        })
       });
-
     </script>
   </body>
 </html>
