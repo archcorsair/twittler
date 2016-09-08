@@ -43,6 +43,7 @@
                 <div class="modal-body">
                 </div>
                 <div class="modal-footer">
+                  <button type="button" class="btn btn-primary refresh-tweet">Load New Tweets</button>
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
               </div>
@@ -81,10 +82,8 @@
         }
         let currentUserTweet = 0;
         function loadUserTweets(username){
-          console.log('Attempting to push tweets to modal');
           let allUserTweets = streams.users[username].length - 1;
           while (currentUserTweet < allUserTweets) {
-            console.log('entering while loop!')
             let tweet = streams.users[username][currentUserTweet];
             let $tweet = $(`<li class="list-group-item">
                 <time class="timeago"></time>
@@ -119,15 +118,22 @@
             intervalID = '';
           }
         })
+
+        // Handler for launching modal when username is clicked
         $tweetbox.on('click', '.username', function(){
-          // Update modal title with username
-          $($modal).find('.modal-title').text(`${$(this).text()}'s Timeline`);
-          // Populate modal with user's tweets
+          // Update modal title with clicked username
+          $modal.find('.modal-title').text(`${$(this).text()}'s Timeline`);
+          // Populate modal with clicked user's tweets
           loadUserTweets($(this).text().slice(2));
-          // Fix for bootstrap modal disappearing after initial click
+          // Fix for bootstrap modal disappearing after initial click for some reason?
           setTimeout(function() {
             $modal.modal();
           }, 0)
+        })
+        // Handler for refreshing tweets inside a modal
+        $modal.on('click', '.refresh-tweet', function(){
+          console.log(`Attempting to refresh user: "${$modal.find('.modal-title').text().slice(2, -11)}" tweets'`);
+          loadUserTweets($modal.find('.modal-title').text().slice(2, -11));
         })
       });
     </script>
