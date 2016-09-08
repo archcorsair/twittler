@@ -38,7 +38,7 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                  <h4 class="modal-title" id="myModalLabel">Timeline</h4>
                 </div>
                 <div class="modal-body">
                 </div>
@@ -80,19 +80,28 @@
               $("time.timeago").timeago(); // Update time dynamically
             }
         }
+        let initModal = false;
         let currentUserTweet = 0;
         function loadUserTweets(username){
           let allUserTweets = streams.users[username].length - 1;
           while (currentUserTweet < allUserTweets) {
             let tweet = streams.users[username][currentUserTweet];
             let $tweet = $(`<li class="list-group-item">
-                <time class="timeago"></time>
+                <small><time class="timeago" datetime="${tweet.created_at.toISOString()}"></time></small>
                   <a class="username">@${username}: </a>
                   ${tweet.message}
               </li>`)
-              $tweet.appendTo($modal.find('.modal-body'));
+              $tweet.prependTo($modal.find('.modal-body'));
               currentUserTweet++;
-              $("time.timeago").timeago(); // Update time dynamically inside modal
+              // Fix for boostrap being weird
+              if (!initModal) {
+                setTimeout(function(){
+                  $("time.timeago").timeago(); // Update time dynamically inside modal
+                }, 250);
+                initModal = true;
+              } else {
+                $("time.timeago").timeago();
+              }
           }
         }
 
@@ -132,7 +141,6 @@
         })
         // Handler for refreshing tweets inside a modal
         $modal.on('click', '.refresh-tweet', function(){
-          console.log(`Attempting to refresh user: "${$modal.find('.modal-title').text().slice(2, -11)}" tweets'`);
           loadUserTweets($modal.find('.modal-title').text().slice(2, -11));
         })
       });
