@@ -32,17 +32,22 @@
         // Listgroup for tweets
         let $listgroup = $('<ul></ul>').addClass('list-group');
 
-        // Modal Construction
-        let $modal = $('<div></div>').addClass('modal').addClass('fade').attr('id', 'myModal').attr('tabindex', '-1').attr('role', 'dialog').attr('aria-labelledby', "myModalLabel");
-        let $modaldialog = $('<div></div>').addClass('modal-dialog').attr('role', 'document');
-        let $modalcontent = $('<div></div>').addClass('modal-content');
-        let $modalheader = $('<div></div>').addClass('modal-header');
-        let $modalx = $('<button></button>').addClass('close').attr('type', 'button').attr('data-dismiss', 'modal').attr('aria-label', "Close");
-        let $modalbtnspan = $('<span></span>').attr('aria-hidden', 'true');
-        let $modaltitle = $('<h4></h4>').addClass('modal-title').attr('id', 'myModalLabel').text('This is the title');
-        let $modalbody = $('<div></div>').addClass('modal-body');
-        let $modalfooter = $('<div></div>').addClass('modal-footer');
-        let $modalclose = $('<button></button>').addClass('btn').addClass('btn-default').attr('type', 'button').attr('data-dismiss', 'modal').text('Close');
+        // Modal Construction (The better way)
+        const $modal  = $(`<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>`);
 
         // Append all the things!
         $body.html(''); // Clearing out the body
@@ -56,16 +61,6 @@
         $navbarnav.appendTo($navbar);
         $navbarform.appendTo($navbarnav);
         $button.appendTo($navbarform);
-        // Modal
-        $modaldialog.appendTo($modal);
-        $modalcontent.appendTo($modaldialog);
-        $modalheader.appendTo($modalcontent);
-        $modalx.appendTo($modalheader);
-        $modalbtnspan.appendTo($modalx);
-        $modaltitle.appendTo($modaltitle);
-        $modalbody.appendTo($modalheader);
-        $modalfooter.appendTo($modalheader);
-        $modalclose.appendTo($modalfooter);
 
         let currentTweet = 0;
         function loadTweets(){
@@ -73,24 +68,37 @@
             while(currentTweet < allTweets){
               let tweet = streams.home[currentTweet];
               let $tweet = $('<li></li>').addClass('list-group-item');
-              // let $tweetDate = $('<small></small>').addClass('tweet-date');
               let $tweetUser = $('<a></a>').addClass('username').attr('href', '#').text(` @${tweet.user}`);
               let $time = $('<time></time>').addClass('timeago');
-              // $tweetDate.text(`${jQuery.timeago(tweet.created_at)} `);
               $time.attr('datetime', `${tweet.created_at.toISOString()}`).addClass('date-text');
-              // $tweet.text(`@${tweet.user}: ${tweet.message}`);
               $tweet.text(`: ${tweet.message}`);
               $tweetUser.prependTo($tweet);
               $tweet.prependTo($tweetbox);
-              // $tweetDate.prependTo($tweet);
               $time.prependTo($tweet);
               currentTweet++;
               $("time.timeago").timeago(); // Update time dynamically
             }
         }
+        let currentUserTweet = 0;
+        function loadUserTweets(username){
+          console.log('Attempting to push tweets to modal');
+          let allUserTweets = streams.users[username].length - 1;
+          while (currentUserTweet < allUserTweets) {
+            console.log('entering while loop!')
+            let tweet = streams.users[username][currentUserTweet];
+            let $tweet = $(`<li class="list-group-item">
+                <time class="timeago"></time>
+                  <a class="username">@${username}: </a>
+                  ${tweet.message}
+              </li>`)
+              $tweet.appendTo($modal.find('.modal-body'));
+              currentUserTweet++;
+              $("time.timeago").timeago(); // Update time dynamically inside modal
+          }
+        }
 
-        loadTweets(); // Initial call to generate tweets.
-        // $("time.timeago").timeago();
+        // Initial call to generate tweets.
+        loadTweets();
         let intervalID;
 
         // button click handler // trigger auto refresh
@@ -112,7 +120,11 @@
           }
         })
         $tweetbox.on('click', '.username', function(){
-          console.log('triggered')
+          // Update modal title with username
+          $($modal).find('.modal-title').text(`${$(this).text()}'s Timeline`);
+          // Populate modal with user's tweets
+          loadUserTweets($(this).text().slice(2));
+          // Fix for bootstrap modal disappearing after initial click
           setTimeout(function() {
             $modal.modal();
           }, 0)
